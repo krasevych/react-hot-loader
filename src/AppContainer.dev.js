@@ -2,15 +2,9 @@
 
 const React = require('react');
 const deepForceUpdate = require('react-deep-force-update');
-const Redbox = require('redbox-react').default;
 const { Component } = React;
 
 class AppContainer extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { error: null };
-  }
-
   componentDidMount() {
     if (typeof __REACT_HOT_LOADER__ === 'undefined') {
       console.error(
@@ -28,30 +22,12 @@ class AppContainer extends Component {
   componentWillReceiveProps() {
     // Hot reload is happening.
     // Retry rendering!
-    this.setState({
-      error: null,
-    });
     // Force-update the whole tree, including
     // components that refuse to update.
     deepForceUpdate(this);
   }
 
-  // This hook is going to become official in React 15.x.
-  // In 15.0, it only catches errors on initial mount.
-  // Later it will work for updates as well:
-  // https://github.com/facebook/react/pull/6020
-  unstable_handleError(error) { // eslint-disable-line camelcase
-    this.setState({
-      error,
-    });
-  }
-
   render() {
-    const { error } = this.state;
-    if (error) {
-      return <this.props.errorReporter error={error} />;
-    }
-
     return React.Children.only(this.props.children);
   }
 }
@@ -67,10 +43,6 @@ AppContainer.propTypes = {
 
     return undefined;
   },
-};
-
-AppContainer.defaultProps = {
-  errorReporter: Redbox,
 };
 
 module.exports = AppContainer;
